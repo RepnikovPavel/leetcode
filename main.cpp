@@ -267,6 +267,106 @@ public:
         return false;
     }
     bool isAnagram(string s, string t) {
+        auto hs = std::unordered_map<char,int>();
+        auto ht = std::unordered_map<char,int>();
+        int Ns = s.size();
+        int Nt = t.size();
+        if(Ns != Nt){return false;}
+        for(int i=0;i<Ns;i++){
+            if(hs.find(s[i]) != hs.end()){
+                hs[s[i]] +=1;
+            }
+            else{
+                hs.insert({s[i],1});
+            }
+
+            if(ht.find(t[i]) != ht.end()){
+                ht[t[i]] +=1;
+            }
+            else{
+                ht.insert({t[i],1});
+            }
+        }
+        for(int i=0;i<Ns;i++){
+            if(ht.find(s[i]) != ht.end() && hs.find(t[i])==hs.end()){
+                return false;
+            }
+            else if(ht.find(s[i])==ht.end() && hs.find(t[i]) != hs.end()){
+                return false;
+            }
+            else if(hs[s[i]] != ht[s[i]]){
+                // auto s_ = s[i];
+                // auto t_ = t[i];
+                // auto t1 = hs[s[i]];
+                // auto t2 = ht[t[i]];
+                return false;
+            }
+        }
+        return true;
+    }
+    int missingNumber(vector<int>& nums) {
+        // Given an array nums containing n distinct numbers in the range [0, n], 
+        // return the only number in the range that is missing from the array.
+        int N = nums.size();
+        auto counts = std::vector<int>(N+1,0);
+        for(int i=0;i<N;i++){
+            counts[nums[i]] +=1;
+        }
+        return std::find(counts.begin(),counts.end(), 0)- counts.begin();
+    }
+    bool wordPattern(string pattern, string s) {
+        int Np = pattern.size();
+        int Ns = s.size();
+        auto h = std::unordered_map<char, std::string>();
+        auto word_pattern = std::unordered_map<std::string, char>();
+        int start=0;
+        int stop =-1;
+        int pattern_pos = 0;
+        for(int i=0;i<Ns;i++){
+            if(i==Ns-1){
+                if(pattern_pos != Np-1){
+                    return false;
+                }
+                auto word = s.substr(start, stop-start+2);
+                if(h.find(pattern[pattern_pos])==h.end()){
+                    h.insert({pattern[pattern_pos],word});
+                    if(word_pattern.find(word) == word_pattern.end()){
+                        word_pattern.insert({word, pattern[pattern_pos]});
+                    }
+                    else if(word_pattern[word] != pattern[pattern_pos]){
+                        return false;
+                    }
+                }
+                else if (h[pattern[pattern_pos]] != word){
+                    return false;
+                }
+                start = i+1;
+                stop = i;
+                pattern_pos += 1;
+            }
+            if(s[i] == ' '){
+                auto word = s.substr(start, stop-start+1);
+                if(h.find(pattern[pattern_pos])==h.end()){
+                    h.insert({pattern[pattern_pos],word});
+                    if(word_pattern.find(word) == word_pattern.end()){
+                        word_pattern.insert({word, pattern[pattern_pos]});
+                    }
+                    else if(word_pattern[word] != pattern[pattern_pos]){
+                        return false;
+                    }
+                }
+                else if (h[pattern[pattern_pos]] != word){
+                    return false;
+                }
+                start = i+1;
+                stop = i;
+                pattern_pos += 1;
+            }
+            else{stop += 1;}
+        }
+        return true;
+    }
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
         
     }
 
@@ -275,8 +375,9 @@ public:
 
 int main(){
     auto sol = Solution();
-    int a = 123456789;
-    std::cout << sol.isHappy(a) << std::endl;
+    std::string s = "jquery";
+    std::string t = "jquery";
+    std::cout << sol.wordPattern(s,t) << std::endl;
     return 0;
 }
 
