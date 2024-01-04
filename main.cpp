@@ -367,6 +367,48 @@ public:
         return true;
     }
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        auto h1 = std::unordered_set<int>();
+        auto h2 = std::unordered_set<int>();
+        int N1 = nums1.size();
+        int N2 = nums2.size();
+        for(int i=0;i<N1;i++){
+            h1.insert(nums1[i]);
+        }
+        for(int i=0;i<N2;i++){
+            h2.insert(nums2[i]);
+        }
+        auto cap = std::vector<int>();
+        cap.reserve(N1>N2?N1:N2);
+        for(auto el:h1){
+            if(h2.find(el) != h2.end()){
+                cap.push_back(el);
+            }
+        }
+        return cap;
+    }
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        auto h1 = std::unordered_map<int,int>();
+        auto h2 = std::unordered_map<int,int>();
+        int N1 = nums1.size();
+        int N2 = nums2.size();
+        for(int i=0;i<N1;i++){
+            h1[nums1[i]] += 1;
+        }
+        for(int i=0;i<N2;i++){
+            h2[nums2[i]] += 1;
+        }
+        auto cap = std::vector<int>();
+        cap.reserve(N1>N2?N1:N2);
+        for(auto el:h1){
+            if(h2.find(el.first) != h2.end()){
+                for(int i=0;i<(el.second<h2[el.first]?el.second:h2[el.first]);i++){
+                    cap.push_back(el.first);
+                }
+            }
+        }
+        return cap;
+    }
+    bool canConstruct(string ransomNote, string magazine) {
         
     }
 
@@ -375,9 +417,10 @@ public:
 
 int main(){
     auto sol = Solution();
-    std::string s = "jquery";
-    std::string t = "jquery";
-    std::cout << sol.wordPattern(s,t) << std::endl;
+    auto v1 = std::vector<int>{1,2,2,1};
+    auto v2 = std::vector<int>{2,2};    
+    sol.intersect(v1,v2);
+    // std::cout <<  << std::endl;
     return 0;
 }
 
