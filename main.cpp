@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
+#include <cstdlib>
 using namespace std;
 
 
@@ -170,7 +171,102 @@ public:
 
         
     }
+
     bool isHappy(int n) {
+        // get digits
+        // if sum(square(digits)) = 1 then true
+        // retry
+        int buff[10];
+        int powers[10];
+        int N =10; 
+        for(int i=0;i<N;i++){
+            powers[i]=(int)pow((float)10,(float)(N-i-1));
+        }
+        int tmp = n;
+        int maxiter = 1000;
+        while(maxiter--){
+            for(int i=0;i<N;i++){
+                buff[i] = tmp/powers[i];
+                tmp = tmp - buff[i]*powers[i];
+            }
+            for(int i=0;i<N;i++){
+                tmp += buff[i]*buff[i];
+            }
+            if (tmp == 1){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    bool isIsomorphic(string s, string t) {
+        auto hs = std::unordered_map<char, int>();
+        auto ht = std::unordered_map<char, int>();
+        int Ns = s.size();
+        for(int i=0;i<Ns;i++){
+            if (hs.find(s[i])==hs.end() && ht.find(t[i]) == ht.end())
+            {
+                hs[s[i]] = i;
+                ht[t[i]] = i;
+                continue;
+
+            }
+            else if (hs.find(s[i]) == hs.end() && ht.find(t[i]) != ht.end()){
+                return false;
+            }
+            else if (hs.find(s[i]) != hs.end() && ht.find(t[i]) == ht.end()){
+                return false;
+            }
+            else{
+                if(hs[s[i]]!=ht[t[i]]){
+                    return false;
+                }
+            }
+            hs[s[i]] = i;
+            ht[t[i]] = i;
+        }
+
+        return true;
+    }
+    bool containsDuplicate(vector<int>& nums) {
+        auto h =  std::unordered_map<int,int>();
+        int N = nums.size();
+        for(int i=0;i<N;i++){
+            h.insert({nums[i],0});
+        }
+        for(int i=0;i<N;i++){
+            h[nums[i]] +=1;
+        }
+        for(auto el: h){
+            if(el.second>1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        //Given an integer array nums and an integer k, 
+        //return true if there are two distinct indices i and j 
+        //in the array such that nums[i] == nums[j] and abs(i - j) <= k.
+        auto h = std::unordered_map<int, std::vector<int>>();
+        int N = nums.size();
+        for(int i=0;i<N;i++){
+            h.insert({nums[i], std::vector<int>()});
+        }
+        for(int i=0;i<N;i++){
+            h[nums[i]].push_back(i);
+        }
+        for(auto& el: h){
+            for(int i=0;i<el.second.size()-1;i++){
+                if(abs(el.second[i]-el.second[i+1]) <= k){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    bool isAnagram(string s, string t) {
         
     }
 
@@ -178,15 +274,9 @@ public:
 
 
 int main(){
-    auto l0 = ListNode(1);
-    auto l1 = ListNode(2);
-    auto l2 = ListNode(3);
-    auto l3 = ListNode(1);
-    l0.next = &l1;
-    l1.next = &l2;
-    l2.next = &l3;
     auto sol = Solution();
-    std::cout << sol.hasCycle(&l0);
+    int a = 123456789;
+    std::cout << sol.isHappy(a) << std::endl;
     return 0;
 }
 
