@@ -6,6 +6,7 @@
 #include <string>
 #include <cmath>
 #include <cstdlib>
+#include <numeric>
 using namespace std;
 
 
@@ -447,7 +448,21 @@ public:
 
     }
     vector<int> fairCandySwap(vector<int>& aliceSizes, vector<int>& bobSizes) {
-        
+        int c1 = std::accumulate(aliceSizes.begin(),aliceSizes.end(),0);
+        int c2 = std::accumulate(bobSizes.begin(),bobSizes.end(),0);
+        int amt = (c1+c2)/2;
+        int shortage1 = amt-c1;
+        int shortage2 = amt-c2;
+        auto s1 = std::unordered_set<int>(aliceSizes.begin(),aliceSizes.end());
+        auto s2 = std::unordered_set<int>(bobSizes.begin(),bobSizes.end());
+        for(auto a_i: s1){
+            // int required_b = (2*a_i+shortage2-shortage1)/2;
+            int required_b = (2*a_i+c2-c1)/2;
+            if(s2.find(required_b)!=s2.end()){
+                return std::vector<int>{a_i,amt+a_i-c1};
+            }
+        }
+        return std::vector<int>{-1,-1};
     }
 
 };
@@ -455,9 +470,10 @@ public:
 
 int main(){
     auto sol = Solution();
-    auto v1 = std::vector<int>{1,1,2,2,3,3};
+    auto v1 = std::vector<int>{1,1};
+    auto v2 = std::vector<int>{2,2};
     // auto v2 = std::vector<int>{2,2};    
-    sol.distributeCandies(v1);
+    sol.fairCandySwap(v1,v2);
     // std::cout <<  << std::endl;
     return 0;
 }
