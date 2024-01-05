@@ -408,7 +408,45 @@ public:
         }
         return cap;
     }
-    bool canConstruct(string ransomNote, string magazine) {
+    int distributeCandies(vector<int>& candyType) {
+        // Input: candyType = [1,1,2,2,3,3]
+        // Output: 3
+        auto h = std::unordered_map<int,int>();
+        int N = candyType.size();
+        for(int i=0;i<N;i++){
+            h[candyType[i]] += 1;
+        }
+        int sum_ = N/2;
+        for(auto& el:h){
+            if(sum_==0){
+                break;
+            }
+            while(el.second > 1 && sum_ > 0){
+                el.second--;
+                sum_--;
+            }
+        }
+        if(sum_!=0){
+            for(auto& el:h){
+                if(sum_==0){
+                    break;
+                }
+                while(el.second >0 && sum_ > 0){
+                    el.second--;
+                    sum_--;
+                }
+            }
+        }
+        int cnt=0;
+        for(auto& el:h){
+            if(el.second > 0){
+                cnt++;
+            }
+        }
+        return cnt;
+
+    }
+    vector<int> fairCandySwap(vector<int>& aliceSizes, vector<int>& bobSizes) {
         
     }
 
@@ -417,9 +455,9 @@ public:
 
 int main(){
     auto sol = Solution();
-    auto v1 = std::vector<int>{1,2,2,1};
-    auto v2 = std::vector<int>{2,2};    
-    sol.intersect(v1,v2);
+    auto v1 = std::vector<int>{1,1,2,2,3,3};
+    // auto v2 = std::vector<int>{2,2};    
+    sol.distributeCandies(v1);
     // std::cout <<  << std::endl;
     return 0;
 }
