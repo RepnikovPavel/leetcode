@@ -464,16 +464,50 @@ public:
         }
         return std::vector<int>{-1,-1};
     }
+    int missingInteger(vector<int>& nums) {
+        // find longest sequential prefix i=[0, N-1]
+        // find smallest missing x: x>=sum(longest seq prefix)
+        int N = nums.size();
+        int longest_size = 1;
+        for(int i=1;i<N;i++){
+            if(nums[i]==nums[i-1]+1){
+                longest_size +=1;
+            }
+            else{
+                break;
+            }
+        }
+        auto h = std::unordered_set<int>();
+        for(int i=0;i<N;i++){
+            h.insert(nums[i]);
+        }
+        int sum_ = std::accumulate(nums.begin(), nums.begin()+longest_size,0);
+        int max_ = nums[std::max_element(nums.begin(), nums.end())-nums.begin()];
+        if (sum_ > max_){
+            return sum_;
+        }
+        for(int x=sum_; x<=max_;x++){
+            if(h.find(x) == h.end()){
+                return x;
+            }
+        }
+        return max_+1;
+    }
+    // vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
+        
+    // }
+
 
 };
 
 
 int main(){
     auto sol = Solution();
-    auto v1 = std::vector<int>{1,1};
-    auto v2 = std::vector<int>{2,2};
-    // auto v2 = std::vector<int>{2,2};    
-    sol.fairCandySwap(v1,v2);
+    // auto v1 = std::vector<int>{1,1};
+    // auto v2 = std::vector<int>{2,2};
+    // auto v2 = std::vector<int>{2,2};
+    auto v = std::vector<int>{1,2,3,2,5};    
+    sol.missingInteger(v);
     // std::cout <<  << std::endl;
     return 0;
 }
