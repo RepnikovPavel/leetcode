@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <numeric>
+#include <bits/stdc++.h> 
 using namespace std;
 
 
@@ -493,10 +494,48 @@ public:
         }
         return max_+1;
     }
-    // vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
-        
-    // }
-
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        int N = nums.size();
+        auto h = std::unordered_map<int,int>();
+        for(auto el: nums){
+            h[el]++;
+        }
+        auto hcnt = std::unordered_map<int,std::vector<int>>{};
+        for(auto& el: h){
+            auto number = el.first;
+            auto cnt = el.second;
+            hcnt[cnt].push_back(number);
+        }
+        std::vector<int> freq(N+1,0);
+        for(auto& el: hcnt){
+            freq[N-el.first] = 1;
+        }
+        k = k>h.size()?h.size():k;
+        std::vector<int> top_k_freq(k,0);
+        int tmp_ = 0;
+        for(int i =0 ;i < freq.size();i++){
+            if(freq[i] == 1){
+                top_k_freq[tmp_] = N-i;
+                tmp_++;
+            }
+            if(tmp_>k-1){
+                break;
+            }
+        }
+        std::vector<int> top_k(k,0);
+        int cp_ = 0;
+        for(int freq_pos_=0;freq_pos_<k;freq_pos_++)
+        {
+            for(int i=0;i<hcnt[top_k_freq[freq_pos_]].size();i++){
+                top_k[cp_] = hcnt[top_k_freq[freq_pos_]][i];
+                cp_++;
+                if(cp_ > k-1){
+                    return top_k;
+                }
+            }
+        }
+        return top_k;
+    }
 
 };
 
@@ -506,9 +545,13 @@ int main(){
     // auto v1 = std::vector<int>{1,1};
     // auto v2 = std::vector<int>{2,2};
     // auto v2 = std::vector<int>{2,2};
-    auto v = std::vector<int>{1,2,3,2,5};    
-    sol.missingInteger(v);
-    // std::cout <<  << std::endl;
+    // auto v = std::vector<int>{1};
+    auto v = std::vector<int>{1,1,2,3,4,4,5,5,5};
+    auto ans = sol.topKFrequent(v,9);
+    for(auto el: ans){
+        std::cout << el << ' ';
+    }
+    std::cout <<  std::endl;
     return 0;
 }
 
