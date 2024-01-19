@@ -493,6 +493,10 @@ public:
         // Input: strs = ["eat","tea","tan","ate","nat","bat"]
         // Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
         // check is anagram for each pair of words, y know O(N^2*mean_size_of_str)
+        //1 <= strs.length <= 104
+        //0 <= strs[i].length <= 100
+        //strs[i] consists of lowercase English letters.
+        
         auto anagrams = std::vector<std::vector<std::string>>(); 
         auto already_seen_positions = std::unordered_set<int>();
         int group_index = 0;
