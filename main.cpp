@@ -490,7 +490,6 @@ public:
         }
         return max_+1;
     }
-<<<<<<< HEAD
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
         // Input: strs = ["eat","tea","tan","ate","nat","bat"]
         // Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
@@ -524,7 +523,6 @@ public:
             group_index++;
         }
         return anagrams;
-=======
     vector<int> topKFrequent(vector<int>& nums, int k) {
         int N = nums.size();
         auto h = std::unordered_map<int,int>();
@@ -566,7 +564,6 @@ public:
             }
         }
         return top_k;
->>>>>>> e208a82ec16ca493a0e9553739406d9d0b02112d
     }
 
 };
@@ -574,10 +571,8 @@ public:
 
 int main(){
     auto sol = Solution();
-<<<<<<< HEAD
     auto v = std::vector<std::string>{"eat","tea","tan","ate","nat","bat"};
     auto ans = sol.groupAnagrams(v);
-=======
     // auto v1 = std::vector<int>{1,1};
     // auto v2 = std::vector<int>{2,2};
     // auto v2 = std::vector<int>{2,2};
@@ -588,7 +583,6 @@ int main(){
         std::cout << el << ' ';
     }
     std::cout <<  std::endl;
->>>>>>> e208a82ec16ca493a0e9553739406d9d0b02112d
     return 0;
 }
 
