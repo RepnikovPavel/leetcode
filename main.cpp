@@ -554,37 +554,25 @@ public:
                 P_ *= nums[i];
             }
         }
-        auto h = std::unordered_map<int,int>();
-        for(int i=0;i<N;i++){
-            h[nums[i]]++;
-        }
-        int P_ = 1;
-        for(auto& el: h){
-            if(el.first != 0){
-                P_ *= (int)std::pow((double)el.first,(double)el.second);
-            }
-        }
         for(int i=0;i<N;i++){
             if(nums[i] == 0){
-                if(h[nums[i]] > 1){
+                if(number_of_zeros > 1){
                     ans[i]=0;
                 }
-                else if(h[nums[i]]==1){
+                else if(number_of_zeros==1){
                     ans[i] = P_;
                 }
             }
             else{
-                if(h.find(0) != h.end()){
+                if(contain_zero){
                     ans[i]=0;
                 }
                 else{
                     ans[i] = P_/nums[i];
                 }
             }
-
         }
         return ans;
-
     }
 
 
