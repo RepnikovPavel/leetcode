@@ -297,10 +297,6 @@ public:
                 return false;
             }
             else if(hs[s[i]] != ht[s[i]]){
-                // auto s_ = s[i];
-                // auto t_ = t[i];
-                // auto t1 = hs[s[i]];
-                // auto t2 = ht[t[i]];
                 return false;
             }
         }
@@ -494,6 +490,39 @@ public:
         }
         return max_+1;
     }
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        // Input: strs = ["eat","tea","tan","ate","nat","bat"]
+        // Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+        // check is anagram for each pair of words, y know O(N^2*mean_size_of_str)
+        //1 <= strs.length <= 104
+        //0 <= strs[i].length <= 100
+        //strs[i] consists of lowercase English letters.
+        
+        auto anagrams = std::vector<std::vector<std::string>>(); 
+        auto already_seen_positions = std::unordered_set<int>();
+        int group_index = 0;
+        for(int word_index =0; word_index < strs.size();word_index++){
+            if(already_seen_positions.find(word_index) != already_seen_positions.end()){
+                continue;
+            }
+            anagrams.push_back(std::vector<std::string>());
+            anagrams[group_index].push_back(strs[word_index]);
+            already_seen_positions.insert(word_index);
+            for(int another_word_index = 0;another_word_index<strs.size();another_word_index++){
+                if(already_seen_positions.find(another_word_index) != already_seen_positions.end()){
+                    continue;
+                }
+                if(word_index==another_word_index){
+                    continue;
+                }
+                if(isAnagram(strs[word_index],strs[another_word_index])){
+                    anagrams[group_index].push_back(strs[another_word_index]);
+                    already_seen_positions.insert(another_word_index);
+                }
+            }
+            group_index++;
+        }
+        return anagrams;
     vector<int> topKFrequent(vector<int>& nums, int k) {
         int N = nums.size();
         auto h = std::unordered_map<int,int>();
@@ -581,6 +610,8 @@ public:
 
 int main(){
     auto sol = Solution();
+    auto v = std::vector<std::string>{"eat","tea","tan","ate","nat","bat"};
+    auto ans = sol.groupAnagrams(v);
     // auto v1 = std::vector<int>{1,1};
     // auto v2 = std::vector<int>{2,2};
     // auto v2 = std::vector<int>{2,2};
