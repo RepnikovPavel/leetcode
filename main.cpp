@@ -536,6 +536,57 @@ public:
         }
         return top_k;
     }
+    vector<int> productExceptSelf(vector<int>& nums) {
+        //Input: nums = [1,2,3,4]
+        //Output: [24,12,8,6]
+        int N = nums.size();
+        auto ans = std::vector<int>();
+        ans.resize(N);
+        int number_of_zeros = 0;
+        int contain_zero =0;
+        int P_ = 1;
+        for(int i=0;i<N;i++){
+            if(nums[i]==0){
+                contain_zero = 1;
+                number_of_zeros++;
+            }
+            else{
+                P_ *= nums[i];
+            }
+        }
+        auto h = std::unordered_map<int,int>();
+        for(int i=0;i<N;i++){
+            h[nums[i]]++;
+        }
+        int P_ = 1;
+        for(auto& el: h){
+            if(el.first != 0){
+                P_ *= (int)std::pow((double)el.first,(double)el.second);
+            }
+        }
+        for(int i=0;i<N;i++){
+            if(nums[i] == 0){
+                if(h[nums[i]] > 1){
+                    ans[i]=0;
+                }
+                else if(h[nums[i]]==1){
+                    ans[i] = P_;
+                }
+            }
+            else{
+                if(h.find(0) != h.end()){
+                    ans[i]=0;
+                }
+                else{
+                    ans[i] = P_/nums[i];
+                }
+            }
+
+        }
+        return ans;
+
+    }
+
 
 };
 
