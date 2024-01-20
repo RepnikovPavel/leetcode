@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <numeric>
 #include <bits/stdc++.h> 
+#include <array>
 using namespace std;
 
 
@@ -523,6 +524,7 @@ public:
             group_index++;
         }
         return anagrams;
+    }
     vector<int> topKFrequent(vector<int>& nums, int k) {
         int N = nums.size();
         auto h = std::unordered_map<int,int>();
@@ -603,6 +605,60 @@ public:
         }
         return ans;
     }
+    bool is_count_greather_then_1(std::array<int, 256>& v){
+        int cnt_ = 0;
+        for(int i=0;i<256;i++){
+            cnt_ += (int)(v[i]>1);
+        }
+        return cnt_>0;
+    }
+    bool check_reset(std::array<int, 256>& v){
+        int cnt_ = 0;
+        for(int i=0;i<256;i++){
+            cnt_ += (int)(v[i]>1);
+            v[i]=0;
+        }
+        return cnt_>0; 
+    }
+    bool isValidSudoku(vector<vector<char>>& board) {
+        int N = board.size();
+        auto v = std::array<int,256>();
+        std::fill(v.begin(),v.end(),0);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                v[board[i][j]]++;
+            }
+            v['.']=0;
+            if(check_reset(v)){
+                return false;
+            }
+        }
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                v[board[j][i]]++;
+            }
+            v['.']=0;
+            if(check_reset(v)){
+                return false;
+            }
+        }
+        for(int i=0;i<3;i++){
+            for(int j=0;j<3;j++){
+                // box position i,j
+                for(int k_=0;k_<3;k_++){
+                    for(int l_=0;l_<3;l_++){
+                        v[board[i*3+k_][j*3+l_]]++;        
+                    }
+                }
+                v['.']=0;
+                if(check_reset(v)){
+                    return false;
+                }
+            }
+        }        
+        return true;
+    }
+
 
 
 };
@@ -610,18 +666,17 @@ public:
 
 int main(){
     auto sol = Solution();
-    auto v = std::vector<std::string>{"eat","tea","tan","ate","nat","bat"};
-    auto ans = sol.groupAnagrams(v);
-    // auto v1 = std::vector<int>{1,1};
-    // auto v2 = std::vector<int>{2,2};
-    // auto v2 = std::vector<int>{2,2};
-    // auto v = std::vector<int>{1};
-    auto v = std::vector<int>{1,1,2,3,4,4,5,5,5};
-    auto ans = sol.topKFrequent(v,9);
-    for(auto el: ans){
-        std::cout << el << ' ';
-    }
-    std::cout <<  std::endl;
+    auto v = std::vector<std::vector<char>>{
+         {'5','3','.','.','7','.','.','.','.'}
+        ,{'6','.','.','1','9','5','.','.','.'}
+        ,{'.','9','8','.','.','.','.','6','.'}
+        ,{'8','.','.','.','6','.','.','.','3'}
+        ,{'4','.','.','8','.','3','.','.','1'}
+        ,{'7','.','.','.','2','.','.','.','6'}
+        ,{'.','6','.','.','.','.','2','8','.'}
+        ,{'.','.','.','4','1','9','.','.','5'}
+        ,{'.','.','.','.','8','.','.','7','9'}};
+    std::cout << sol.isValidSudoku(v)<< std::endl;
     return 0;
 }
 
