@@ -7,15 +7,25 @@
 #include <cmath>
 #include <cstdlib>
 #include <numeric>
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
+#include <queue>
+#include <stack>
 using namespace std;
 
 
 //  Definition for singly-linked list.
+// struct ListNode {
+//     int val;
+//     ListNode *next;
+//     ListNode(int x) : val(x), next(NULL) {}
+// };
+
 struct ListNode {
     int val;
     ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
 class Solution {
@@ -523,6 +533,7 @@ public:
             group_index++;
         }
         return anagrams;
+    }
     vector<int> topKFrequent(vector<int>& nums, int k) {
         int N = nums.size();
         auto h = std::unordered_map<int,int>();
@@ -565,6 +576,7 @@ public:
         }
         return top_k;
     }
+
     vector<int> productExceptSelf(vector<int>& nums) {
         //Input: nums = [1,2,3,4]
         //Output: [24,12,8,6]
@@ -603,25 +615,186 @@ public:
         }
         return ans;
     }
-
-
 };
+
+ListNode* reverseList(ListNode* head) {
+    // if(head == nullptr){
+    //     return nullptr;
+    // }
+    // auto q = std::stack<int>();
+    // auto cv = head;
+    // while(cv != nullptr){
+    //     q.push(cv->val);
+    //     cv = cv->next;
+    // }
+    // cv = head;
+    // while(q.size()!=0){
+    //     cv->val = q.top();
+    //     q.pop();
+    //     cv = cv->next;
+    // }
+    // return head;
+
+    if(head == nullptr){
+        return nullptr;
+    }
+    if(head->next == nullptr){
+        return head;
+    } 
+    auto cv = head;
+    ListNode* previous = nullptr;
+    while(cv->next->next != nullptr){
+        auto neighbour_ptr = cv->next; // copy
+        
+        // set correct values for elements
+        // cv->next->next = cv;
+        cv->next = previous;
+        previous = cv;
+        // move cv
+        cv = neighbour_ptr;
+    }
+    auto old_head =  cv;
+    auto old_tail = cv->next;
+    old_tail->next = old_head; // and before there was nullptr
+    old_head->next = previous;
+
+    return old_tail;
+}
+
+bool isValidParentheses(string s) {
+    // "()[]{}"
+    // '(' -> ')'
+    // '[' -> ']'
+    // '{' -> '}'
+    // ----------
+    // '(' <- ')'
+    // '[' <- ']'
+    // '{' <- '}'
+    // {}{}{}{}}}}
+    // source string
+    // {{}}{}
+    // in stack 
+    // {
+    // {{
+    // }{{
+    // }}{{
+    // {}}{{
+    // }{}}{{
+    // cannot insert to stack before stack will be empty
+
+    int iocnt = 0;
+    int mode = 0; // 0 - insert, 1 - pop
+    auto stack = std::stack<int>();
+    for(auto c: s){
+        if (c=='{' || c=='[' || c =='('){
+            stack.push(c);
+        }
+        else {
+            if(stack.empty() || 
+            (stack.top()=='{' && c != '}') ||
+            (stack.top()=='(' && c != ')') ||
+            (stack.top()=='[' && c != ']'))
+            {
+                return false;
+            }
+            stack.pop();
+        }
+    }
+    return stack.empty();  
+}
+
+int maxArea(vector<int>& height) {
+    // [1,8,6,2,5,4,8,3,7]
+    // 
+}
+
+vector<int> twoSum(vector<int>& numbers, int target) {
+    // input array is sorted
+    // find i1 and i2 such that numbers[i1]+numbers[i2]==target
+    // The tests are generated such that there is exactly one solution.
+    // numbers 2 7 11 15 target 9
+    // -1000 <= numbers[i] <= 1000
+    // 2 <= numbers.length <= 3 * 104
+    // 11 7 15 2
+    // output indexes must be different
+    // 0 0 3 4 target 0
+    // o_ = 1 2 
+
+    ///////////////////
+    // simple solution 
+    // auto o_ = std::vector<int>(2,-1);
+    // auto h = std::unordered_map<int, int>();
+    // int N = numbers.size();
+    // for(int i=0;i<N;i++){
+    //     h[numbers[i]] = i;
+    // }
+    // for(auto el: h){
+    //     int num = el.first;
+    //     int pos = el.second;
+    //     if(h.find(target-num)!=h.end()){
+    //         o_[0]= pos+1;
+    //         o_[1] = h[target-num]+1;
+    //         if(o_[0] == o_[1]){
+    //             int v = num;
+    //             // get neighborhoods
+    //             if(pos==0){
+    //                 if(numbers[pos+1]==v){
+    //                     o_[0] = pos-1+1;
+    //                     o_[1] = pos+1;
+    //                 }
+    //                 else{
+    //                     break;
+    //                 }
+    //             }
+    //             else if(pos == N-1){
+    //                 if(numbers[pos-1]==v){
+    //                     o_[0] = pos-1+1;
+    //                     o_[1] = pos+1;
+    //                 }
+    //             }
+    //             else{
+    //                 if(numbers[pos-1]==v){
+    //                     o_[0] = pos-1+1;
+    //                     o_[1] = pos+1;
+    //                 }
+    //                 else if (numbers[pos+1]==v){
+    //                     o_[0] = pos+1;
+    //                     o_[1] = pos+1+1;
+    //                 }
+    //             }
+
+
+
+    //         }
+
+    //         std::sort(o_.begin(),o_.end());
+    //         return o_;
+    //     }
+    // }
+    // return std::vector<int>{-1,-1};
+
+    // advanced sol
+
+    auto o_ = std::vector<int>(2,-1);
+    return std::vector<int>{-1,-1};
+}
 
 
 int main(){
-    auto sol = Solution();
-    auto v = std::vector<std::string>{"eat","tea","tan","ate","nat","bat"};
-    auto ans = sol.groupAnagrams(v);
-    // auto v1 = std::vector<int>{1,1};
-    // auto v2 = std::vector<int>{2,2};
-    // auto v2 = std::vector<int>{2,2};
-    // auto v = std::vector<int>{1};
-    auto v = std::vector<int>{1,1,2,3,4,4,5,5,5};
-    auto ans = sol.topKFrequent(v,9);
-    for(auto el: ans){
-        std::cout << el << ' ';
-    }
-    std::cout <<  std::endl;
+
+    std::string s("{}{}{}{}");
+    std::cout << isValidParentheses(s) << std::endl;
+    // auto sol = Solution();
+    // auto list = new ListNode(10,
+    // new ListNode(11, new ListNode(12, new ListNode(13, nullptr))));
+
+    // auto* new_list = reverseList(list);
+    // int max_iter_ = 0;
+    // while(new_list != nullptr && max_iter_ <5){
+    //     std::cout <<  new_list->val << std::endl;
+    //     new_list = new_list->next;
+    //     max_iter_++;
+    // }
     return 0;
 }
 
