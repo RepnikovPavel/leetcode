@@ -10,6 +10,7 @@
 #include <bits/stdc++.h>
 #include <queue>
 #include <stack>
+#include <array>
 using namespace std;
 
 
@@ -500,6 +501,20 @@ public:
         }
         return max_+1;
     }
+    std::string fill_count_low_letters(std::string& s1, std::array<int,26>& b1){
+        for(int i=0;i<26;i++){
+            b1[i] = 0;
+        }
+        for(int i=0;i<s1.size();i++){
+            b1[s1[i]-97]+=1;
+        }
+        std::string o_ = "";
+        o_.reserve(26);
+        for(int i=0;i<26;i++){
+            o_ += std::to_string(b1[i])+"_";
+        }
+        return o_;
+    }
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
         // Input: strs = ["eat","tea","tan","ate","nat","bat"]
         // Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
@@ -507,33 +522,32 @@ public:
         //1 <= strs.length <= 104
         //0 <= strs[i].length <= 100
         //strs[i] consists of lowercase English letters.
-        
-        auto anagrams = std::vector<std::vector<std::string>>(); 
-        auto already_seen_positions = std::unordered_set<int>();
-        int group_index = 0;
-        for(int word_index =0; word_index < strs.size();word_index++){
-            if(already_seen_positions.find(word_index) != already_seen_positions.end()){
-                continue;
+        auto h = std::unordered_map<std::string, std::vector<int>>{};
+        auto b = std::array<int,26>{};
+        for(int i=0;i<strs.size();i++){
+            auto count_hash_ = fill_count_low_letters(strs[i], b);
+            // std::cout << count_hash_ << std::endl;
+            if(h.find(count_hash_)==h.end()){
+                h.insert({count_hash_,std::vector<int>{i}});
             }
+            else{
+                h[count_hash_].push_back(i);
+            }
+        }
+        auto anagrams = std::vector<std::vector<std::string>>();
+        int pos_ =0;
+        for(auto& el: h){
+            auto& indicies = el.second;
             anagrams.push_back(std::vector<std::string>());
-            anagrams[group_index].push_back(strs[word_index]);
-            already_seen_positions.insert(word_index);
-            for(int another_word_index = 0;another_word_index<strs.size();another_word_index++){
-                if(already_seen_positions.find(another_word_index) != already_seen_positions.end()){
-                    continue;
-                }
-                if(word_index==another_word_index){
-                    continue;
-                }
-                if(isAnagram(strs[word_index],strs[another_word_index])){
-                    anagrams[group_index].push_back(strs[another_word_index]);
-                    already_seen_positions.insert(another_word_index);
-                }
+            for(int i=0;i<indicies.size();i++){
+                anagrams[pos_].push_back(strs[indicies[i]]);
             }
-            group_index++;
+            pos_++;
         }
         return anagrams;
     }
+    }
+
     vector<int> topKFrequent(vector<int>& nums, int k) {
         int N = nums.size();
         auto h = std::unordered_map<int,int>();
@@ -615,7 +629,80 @@ public:
         }
         return ans;
     }
-};
+    bool is_count_greather_then_1(std::array<int, 256>& v){
+        int cnt_ = 0;
+        for(int i=0;i<256;i++){
+            cnt_ += (int)(v[i]>1);
+        }
+        return cnt_>0;
+    }
+    bool check_reset(std::array<int, 256>& v){
+        int cnt_ = 0;
+        for(int i=0;i<256;i++){
+            cnt_ += (int)(v[i]>1);
+            v[i]=0;
+        }
+        return cnt_>0; 
+    }
+    bool isValidSudoku(vector<vector<char>>& board) {
+        int N = board.size();
+        auto v = std::array<int,256>();
+        std::fill(v.begin(),v.end(),0);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                v[board[i][j]]++;
+            }
+            v['.']=0;
+            if(check_reset(v)){
+                return false;
+            }
+        }
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                v[board[j][i]]++;
+            }
+            v['.']=0;
+            if(check_reset(v)){
+                return false;
+            }
+        }
+        for(int i=0;i<3;i++){
+            for(int j=0;j<3;j++){
+                // box position i,j
+                for(int k_=0;k_<3;k_++){
+                    for(int l_=0;l_<3;l_++){
+                        v[board[i*3+k_][j*3+l_]]++;        
+                    }
+                }
+                v['.']=0;
+                if(check_reset(v)){
+                    return false;
+                }
+            }
+        }        
+        return true;
+    }
+    int longestConsecutive(vector<int>& nums) {
+        int N = nums.size();
+        auto h = std::unordered_set<int>(nums.begin(),nums.end());
+        auto iter = h.begin();
+        int max_length = 0;
+        while(iter != h.end()){
+            int start_ = *iter;
+            if(h.find(start_-1) != h.end()){
+                // not a start of the sequence
+                iter++;
+                continue;
+            }
+            int source_start_ = *iter;
+            while(h.find(start_+1) != h.end()){
+                start_ = start_+1;
+            }
+            max_length = std::max(max_length, start_-source_start_+1);
+            iter++;
+        }
+        return max_length;
+    }};
 
 ListNode* reverseList(ListNode* head) {
     // if(head == nullptr){
@@ -781,20 +868,19 @@ vector<int> twoSum(vector<int>& numbers, int target) {
 
 
 int main(){
-
-    std::string s("{}{}{}{}");
-    std::cout << isValidParentheses(s) << std::endl;
-    // auto sol = Solution();
-    // auto list = new ListNode(10,
-    // new ListNode(11, new ListNode(12, new ListNode(13, nullptr))));
-
-    // auto* new_list = reverseList(list);
-    // int max_iter_ = 0;
-    // while(new_list != nullptr && max_iter_ <5){
-    //     std::cout <<  new_list->val << std::endl;
-    //     new_list = new_list->next;
-    //     max_iter_++;
-    // }
+    auto sol = Solution();
+    auto v = std::vector<std::string>{"eat","tea","tan","ate","nat","bat"};
+    auto ans = sol.groupAnagrams(v);
+    // auto v1 = std::vector<int>{1,1};
+    // auto v2 = std::vector<int>{2,2};
+    // auto v2 = std::vector<int>{2,2};
+    // auto v = std::vector<int>{1};
+    auto v = std::vector<int>{1,1,2,3,4,4,5,5,5};
+    auto ans = sol.topKFrequent(v,9);
+    for(auto el: ans){
+        std::cout << el << ' ';
+    }
+    std::cout <<  std::endl;
     return 0;
 }
 
