@@ -546,7 +546,7 @@ public:
         }
         return anagrams;
     }
-    }
+
 
     vector<int> topKFrequent(vector<int>& nums, int k) {
         int N = nums.size();
@@ -702,7 +702,8 @@ public:
             iter++;
         }
         return max_length;
-    }};
+    }
+};
 
 ListNode* reverseList(ListNode* head) {
     // if(head == nullptr){
@@ -793,6 +794,7 @@ bool isValidParentheses(string s) {
 int maxArea(vector<int>& height) {
     // [1,8,6,2,5,4,8,3,7]
     // 
+    return -1;
 }
 
 vector<int> twoSum(vector<int>& numbers, int target) {
@@ -866,20 +868,153 @@ vector<int> twoSum(vector<int>& numbers, int target) {
     return std::vector<int>{-1,-1};
 }
 
+int search(vector<int>& nums, int target) {
+    // find target in nums in O(log(N)) runtime complexity
+    // return index
+    // if target does not exists return -1
+    // all integers are unique
+    // -1 0 3 5 target 9 12
+    // sorted in ascending order
+    int N = nums.size();
+    if(N==0){return -1;}
+    if(target<nums[0] || target > nums[N-1]){return -1;}
+    int left = 0;
+    int right = N-1;
+    // int pos = (right-left+1)%2==0?(right+left)/2-1:(right+left)/2;
+    int pos = (right+left)/2;
+    int search_dist = right-left;
+    while(true){
+        int v = nums[pos];
+        if(right-left==0){
+            if(v==target){
+                break;
+            }
+            else{
+                pos=-1;
+                break;
+            }
+        }
+        if(v<target){
+            left = pos+1;
+            pos = (right+left)/2;
+        }
+        else if(v>target){
+            right = pos-1;
+            pos = (right+left)/2;
+        }
+        else{
+            break;
+        }
+        search_dist=right-left;
+    }
+    return pos;
+}
+
+int maxProfit(vector<int>& prices) {
+    // find best day to buy one stock
+    // and choose different day in the future to cell that stock
+    // 7 1 5 3 6 4
+    // profit \eqdef buy - cell 
+    //               cell - buy -> 6
+    //                 6     1
+    // 7 6 5 4 3 2 1
+    // profit -> 0
+    
+    // simple and slow
+    // int N = prices.size();
+    // if(N<2){return 0;}
+    // int profit = 0; 
+    // for(int i=0;i<N-1;i++){
+    //     int buy= prices[i];
+    //     for(int j = i+1;j<N;j++){
+    //         int cell = prices[j];
+    //         profit = profit >= cell-buy?profit:cell-buy;
+    //     }
+    // }
+
+    // return profit;
+    // simple and linear time
+    int N = prices.size();
+    if(N<2){return 0;}
+    int profit = 0; 
+    int right = N-1;
+    int min_buy = prices[0];
+    for(int left=0;left<right+1;left++){
+        min_buy = prices[left]<min_buy?prices[left]:min_buy;
+        profit = profit >= prices[left]-min_buy?profit:prices[left]-min_buy;
+    }
+    return profit;
+}
+
+ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+    // input: sorted lists
+    // output: merge lists
+    if(list1==nullptr){return list2;}
+    if(list2==nullptr){return list1;}
+    if(list1==nullptr && list2==nullptr){return nullptr;}
+    auto* t1 = list1;
+    auto* t2 = list2;
+    ListNode* head;
+    auto* leader = t1->val<t2->val?t1:t2;
+    int l1_move = 0;
+    int l2_move = 0;
+    if(t1->val< t2->val){
+        l1_move = 1;
+    }
+    else{
+        l2_move = 1;
+    }
+    if(l1_move){
+        t1= t1->next;
+    }
+    if(l2_move){
+        t2= t2->next;
+    }
+    head = leader;
+
+    while(true){
+
+        if(t1 == nullptr && t2==nullptr){
+            break;
+        }
+        else if (t1==nullptr){
+            leader->next = t2;
+            break;
+        }
+        else if (t2==nullptr){
+            leader->next = t1;
+            break;
+        }
+        else{
+            l1_move = 0;
+            l2_move = 0;
+            if(t1->val< t2->val){
+                l1_move = 1;
+            }
+            else{
+                l2_move = 1;
+            }
+            
+            auto* new_leader = t1->val<t2->val?t1:t2;
+
+            leader->next = new_leader;
+            leader = new_leader;
+            if(l1_move){
+                t1= t1->next;
+            }
+            if(l2_move){
+                t2= t2->next;
+            }
+        }
+    }
+    return head;
+}
+
 
 int main(){
     auto sol = Solution();
-    auto v = std::vector<std::string>{"eat","tea","tan","ate","nat","bat"};
-    auto ans = sol.groupAnagrams(v);
-    // auto v1 = std::vector<int>{1,1};
-    // auto v2 = std::vector<int>{2,2};
-    // auto v2 = std::vector<int>{2,2};
-    // auto v = std::vector<int>{1};
-    auto v = std::vector<int>{1,1,2,3,4,4,5,5,5};
-    auto ans = sol.topKFrequent(v,9);
-    for(auto el: ans){
-        std::cout << el << ' ';
-    }
+    auto v = std::vector<int>{7,1,5,3,6,4};
+    std::cout<< maxProfit(v) <<std::endl;
     std::cout <<  std::endl;
     return 0;
 }
