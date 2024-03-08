@@ -1010,6 +1010,95 @@ ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
     return head;
 }
 
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(): val(0), left(nullptr), right(nullptr){}
+    TreeNode(int x):val(x), left(nullptr),right(nullptr){}
+    TreeNode(int x, TreeNode* left, TreeNode* right):val(x),left(left),right(right){}
+};
+
+TreeNode* InvertTree(TreeNode* root){
+    return nullptr;
+}
+
+// int left(int i){
+//     return 2*i+1;
+// }
+// int right(int i){
+//     return 2*i+2;
+// }
+// int parent(int i){
+//     return (i-1)/2;
+// } 
+// int get_min_pos(std::vector<int>& a, int leftp, int rightp){
+//     rightp = rightp<=(a.size()-1)?rightp:(a.size()-1);
+//     leftp = leftp<=(a.size()-1)?leftp:(a.size()-1);
+//     if(a[rightp] < a[leftp]){
+//         return rightp;
+//     }
+//     else{
+//         return leftp;
+//     }
+// }
+
+void insert(std::priority_queue<int, std::vector<int>, std::greater<int>>& a, int el, int k){
+    if(a.size()==k){
+        if(el > a.top()){
+            a.pop();
+            a.push(el);
+        }
+    }
+    else{
+        a.push(el);
+    }
+}
+
+class KthLargest {
+public:
+    std::priority_queue<int, std::vector<int>, std::greater<int>> a;
+    int k;
+    KthLargest(int k, vector<int>& nums) {
+        this->k = k;
+        for(int i=0;i< nums.size();i++){
+            insert(a,nums[i],this->k);
+        }
+    }
+    
+    int add(int val) {
+        insert(a, val, this->k);
+        return a.top();
+    }
+};
+
+int lastStoneWeight(vector<int>& stones) {
+    // stones - weights of stones
+    // 1 <= N stones <= 30
+    // 1 <= ith weight <= 1000
+    // Input: stones = [2,7,4,1,8,1]
+    // Output: 1
+    // Explanation: 
+    // We combine 7 and 8 to get 1 so the array converts to [2,4,1,1,1] then,
+    // we combine 2 and 4 to get 2 so the array converts to [2,1,1,1] then,
+    // we combine 2 and 1 to get 1 so the array converts to [1,1,1] then,
+    // we combine 1 and 1 to get 0 so the array converts to [1] then that's the value of the last stone.
+    std::priority_queue<int, std::vector<int>> a(stones.begin(),stones.end());
+    while(a.size()!=1){
+        int top1 = a.top();
+        a.pop();
+        int top2 = a.top();
+        a.pop();
+        a.push(top1-top2);
+    }
+    return a.top();
+}
+
+vector<vector<int>> subsets(vector<int>& nums) {
+        
+}
+
+
 
 int main(){
     auto sol = Solution();
