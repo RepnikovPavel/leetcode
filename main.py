@@ -519,14 +519,75 @@ def numIslands(grid: List[List[str]]) -> int:
 # print(numIslands(grid))
 
 
+def rec(a,element_to_push_pos,output, buffer, cumsum, target):
+    if cumsum == target:
+        # find the good comb
+        output.append(buffer.copy())
+        pass 
+    elif cumsum > target or element_to_push_pos >= len(a):
+        # that combination is bad
+        return 
+    else:
+        buffer.append(a[element_to_push_pos])
+        rec(a, element_to_push_pos, output, buffer, cumsum+a[element_to_push_pos], target)
+        # вышли из строчки выше 
+        # либо нашли удачную комбинацию, либо провальную
+        # без промежуточных вариантов
+        # в любом случае нужно пробовать добавлять новый элементы a[i+1]
+        # либо еще раз удалять текущий
+        # теперь работаем только с новыми элементами, которых не видели раньше
+        # но со старым базовым массивом
+
+        # подчищаем последнюю удачную комбинацию
+        buffer.pop()
+        # пробуем новое
+        rec(a, element_to_push_pos+1, output, buffer, cumsum,target)
+
+
+
 
 
 def combinationSum(candidates: List[int], target: int) -> List[List[int]]:
     # найти все подмножества, которые суммируются в таргет
-    return [[]]
+    a = candidates
+    combs = []
+    rec(a,0,combs,[], 0,target)
+    # for c in combs:
+    #     print(c)
+    return combs
+# candidates = [2,3,6,7]
+# target = 7
+
+# combinationSum(candidates, target)
 
 
+# baseset is set of indicies from which we can get element from any position
+def rec(a, baseset, output, buffer):
+    # проверка происходит перед тем, как опустошится массив индексов
+    # просто чтобы сэкономить число вызовов функций
+    if len(baseset) == 1:
+        buffer.append(a[baseset[0]])
+        output.append(buffer.copy())
+        buffer.pop()
+        return
 
+    for index in baseset:
+        buffer.append(a[index])
+        BminusI = baseset.copy()
+        BminusI.remove(index)
+        rec(a, BminusI, output, buffer)
+        buffer.pop()
+
+def permute(nums: List[int]) -> List[List[int]]:
+    # return all possible permutations
+    output = []
+    rec(nums, [i for i in range(len(nums))], output, [])
+    return output
+
+nums = [1,2,3]
+o_ = permute(nums)
+for el in o_:
+    print(el)
 
 
 
