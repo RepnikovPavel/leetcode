@@ -3,6 +3,7 @@ from typing import List, Any, Tuple
 import numpy as np
 from copy import deepcopy,copy
 from pprint import pprint
+import queue
 # def plusOne(self, digits: List[int]) -> List[int]:
     
 # сложение в столбик
@@ -584,11 +585,50 @@ def permute(nums: List[int]) -> List[List[int]]:
     rec(nums, [i for i in range(len(nums))], output, [])
     return output
 
-nums = [1,2,3]
-o_ = permute(nums)
-for el in o_:
-    print(el)
+# nums = [1,2,3]
+# o_ = permute(nums)
+# for el in o_:
+#     print(el)
 
+def lengthOfLongestSubstring(s: str) -> int:
+    # Given a string s, find the length of the longest 
+    # substring without repeating characters.
+    currentset = dict()
+    max_length = 0
+    currentlength = 0
+    q = []
+    for i in range(len(s)):
+        if s[i] in currentset:
+            # hoops, here a repeating symbol
+            currentlength -= currentset[s[i]]
+            while True:
+                if q[0] == s[i]:
+                    del currentset[q[0]]
+                    q.pop(0)
+                    break
+                else:
+                    del currentset[q[0]]
+                    q.pop(0)
+            currentlength+=1
+            currentset.update({s[i]:currentlength})
+            q.append(s[i])
+        elif not s[i] in currentset:
+            currentlength+=1
+            currentset.update({s[i]:currentlength})
+            q.append(s[i])
+
+        max_length = max(max_length, len(currentset))
+
+    return max_length
+
+# # s = "abcabcbb"
+# s= "pwwkew"
+# # s = "dvdf"
+# assert lengthOfLongestSubstring(s) == 3
+
+# s = 'aab'
+# print(lengthOfLongestSubstring(s))
+# assert lengthOfLongestSubstring(s) == 2
 
 
 
