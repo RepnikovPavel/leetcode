@@ -631,9 +631,113 @@ def lengthOfLongestSubstring(s: str) -> int:
 # assert lengthOfLongestSubstring(s) == 2
 
 
+def rec(i,j, iter, word, board, traces):
+
+    if iter == 0:
+        traces[i+1][j+1] = 1
+
+    if iter == len(word):
+        return True
+    
+    if board[i][j] == word[iter]:
+        summary = False
+        all_painted = True
+        if traces[i+1+1][j+1] == 0:
+            traces_=  deepcopy(traces)        
+            traces_[i+1+1][j+1] = 1 
+            a1= rec(i+1,j,iter+1,word,board,traces_)
+            summary = summary or a1
+            all_painted = False
+        if traces[i-1+1][j+1] == 0:
+            traces_=  deepcopy(traces)        
+            traces_[i-1+1][j+1] = 1 
+            a2 = rec(i-1,j,iter+1,word,board,traces_)
+            summary = summary or a2
+            all_painted = False
+        if traces[i+1][j+1+1] == 0:
+            traces_=  deepcopy(traces)       
+            traces_[i+1][j+1+1] = 1 
+            a3 = rec(i,j+1,iter+1,word,board,traces_)
+            summary = summary or a3
+            all_painted = False
+        if traces[i+1][j-1+1] == 0:
+            traces_=  deepcopy(traces)       
+            traces_[i+1][j-1+1] = 1 
+            a4 = rec(i,j-1,iter+1,word,board,traces_)
+            summary = summary or a4
+            all_painted = False
+        if all_painted and iter != (len(word)-1):
+            return False
+        if iter == (len(word)-1):
+            return True
+        return summary
+    else:
+        return False
+    
+
+def exist(board: List[List[str]], word: str) -> bool:
+    # Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+    if len(board) == 0:
+        return False
+    if len(word) == 0:
+        return False
+    
+    # count = defaultdict(int, sum(map(Counter, board), Counter()))
+    # if count[word[0]] > count[word[-1]]:
+    #     word = word[::-1]
 
 
+    m  = len(board)
+    n = len(board[0])
+    start_pos = []
+    for i in range(m):
+        for j in range(n):
+            if board[i][j] == word[0]:
+                start_pos.append((i,j))
 
+    traces = []
+    for i in range(m+2):
+        traces.append([])
+        for j in range(n+2):
+            traces[i].append(0)
+
+    for j in range(n+2):
+        traces[0][j] = 1
+        traces[-1][j] = 1
+    for i in range(m+2):
+        traces[i][0] = 1
+        traces[i][-1] = 1
+
+    for i in range(len(traces)):
+        print(traces[i])
+    print(start_pos)
+
+    summary = False
+    for i,j in start_pos:
+        if i==1 and j==1:
+            print(1)
+        summary = summary or rec(i,j,0,word,board,deepcopy(traces))
+    return summary
+
+# board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+# word = "SEE"
+# board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+# word = "ABCB"
+# board = [["a","a"]]
+# word = "aaa"
+# board =\
+# [["a","b"],["c","d"]]
+# word =\
+# "cdba"
+
+# board =\
+# [["C","A","A"],
+#  ["A","A","A"],
+#  ["B","C","D"]]
+# word =\
+# "AAB"
+
+# print(exist(board,word))
 
 
 
